@@ -32,39 +32,39 @@
   <h1>Generated Prompt Outputs</h1>
   <ul id="file-list"></ul>
 
-<script>
-  // Fetch contents of beta/outputs/
-  fetch('/beta/outputs/')
-    .then(response => {
-      if (!response.ok) throw new Error("No output files found.");
-      return response.text();
-    })
-    .then(data => {
-      const parser = new DOMParser();
-      const htmlDoc = parser.parseFromString(data, "text/html");
+  <script>
+    // Fetch contents of beta/outputs/
+    fetch('/beta/outputs/')
+      .then(response => {
+        if (!response.ok) throw new Error("No output files found.");
+        return response.text();
+      })
+      .then(data => {
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(data, "text/html");
 
-      // Find all <a> tags inside <ul>
-      const links = Array.from(htmlDoc.querySelectorAll('ul > li > a'))
-                         .filter(link => link.href.endsWith('.html'));
+        // Find all links ending with .html
+        const links = Array.from(htmlDoc.querySelectorAll('a'))
+                          .filter(link => link.href.endsWith('.html'));
 
-      const list = document.getElementById('file-list');
-      if (links.length === 0) {
-        list.innerHTML = '<li>No output files available.</li>';
-        return;
-      }
+        const list = document.getElementById('file-list');
+        if (links.length === 0) {
+          list.innerHTML = '<li>No output files available.</li>';
+          return;
+        }
 
-      links.forEach(link => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = '/beta/outputs/' + link.textContent; // Use link text as filename
-        a.textContent = link.textContent;
-        li.appendChild(a);
-        list.appendChild(li);
+        links.forEach(link => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = '/beta/outputs/' + link.textContent; // Use filename directly
+          a.textContent = link.textContent;
+          li.appendChild(a);
+          list.appendChild(li);
+        });
+      })
+      .catch(err => {
+        document.getElementById('file-list').innerHTML = `<li>Error loading files: ${err.message}</li>`;
       });
-    })
-    .catch(err => {
-      document.getElementById('file-list').innerHTML = `<li>Error loading files: ${err.message}</li>`;
-    });
-</script>
+  </script>
 </body>
 </html>
