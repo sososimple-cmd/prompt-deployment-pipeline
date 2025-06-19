@@ -1,8 +1,8 @@
 {
   "template": "welcome_email.txt",
   "variables": {
-    "name": "Alex"
+    "name": "Sam"
   },
-  "output_file": "welcome_alex.html",
+  "output_file": "welcome_sam.html",
   "max_tokens": 500
 }
