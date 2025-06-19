@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pixel Learning Co. Prompt Outputs</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: #2c3e50; }
+    ul { list-style-type: none; padding-left: 0; }
+    li { margin: 10px 0; }
+    a { text-decoration: none; color: #3498db; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Generated Prompt Outputs</h1>
+  <ul id="file-list"></ul>
+
+  <script>
+    // Load list of files from /outputs/
+    fetch('/outputs/')
+      .then(response => {
+        if (!response.ok) throw new Error("No output files found.");
+        return response.text();
+      })
+      .then(data => {
+        const parser = new DOMParser();
+        const html = parser.parseFromString(data, "text/html");
+        const links = Array.from(html.querySelectorAll("a"))
+                           .filter(link => link.href.endsWith('.html'));
+
+        const list = document.getElementById('file-list');
+        links.forEach(link => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = link.href;
+          a.textContent = link.textContent;
+          li.appendChild(a);
+          list.appendChild(li);
+        });
+      })
+      .catch(err => {
+        document.getElementById('file-list').innerHTML = '<li>No output files available.</li>';
+      });
+  </script>
+</body>
+</html>

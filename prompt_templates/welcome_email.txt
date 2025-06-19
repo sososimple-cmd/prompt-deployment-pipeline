@@ -1,0 +1,6 @@
+Hello {name},
+
+Welcome to Pixel Learning Co! Our AI-powered platform is designed to help you learn smarter with automated prompts and personalized feedback.
+
+Best,
+The Pixel Learning Team
