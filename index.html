@@ -34,7 +34,7 @@
 
 <script>
   // Fetch output list from JSON
-  fetch('/output_list.json')
+  fetch('output_list.json')
     .then(response => {
       if (!response.ok) throw new Error("No output files found.");
       return response.json();
