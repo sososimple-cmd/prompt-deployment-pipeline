@@ -33,38 +33,41 @@
   <ul id="file-list"></ul>
 
   <script>
-    // Fetch directory listing from /beta/outputs/
-    fetch('/beta/outputs/')
-      .then(response => {
-        if (!response.ok) throw new Error("No output files found.");
-        return response.text();
-      })
-      .then(data => {
-        const parser = new DOMParser();
-        const htmlDoc = parser.parseFromString(data, "text/html");
+  // Fetch directory listing from /beta/outputs/
+  fetch('/beta/outputs/')
+    .then(response => {
+      if (!response.ok) throw new Error("No output files found.");
+      return response.text();
+    })
+    .then(data => {
+      const parser = new DOMParser();
+      const htmlDoc = parser.parseFromString(data, "text/html");
 
-        // Find all links ending with .html
-        const links = Array.from(htmlDoc.querySelectorAll("a"))
-                          .filter(link => link.href.endsWith('.html'));
+      // Use more specific selector to target only the file links inside <ul>
+      const anchorTags = Array.from(htmlDoc.querySelectorAll('ul > li > a'));
+      
+      // Filter out any non-.html files
+      const htmlFiles = anchorTags.filter(link => link.href.endsWith('.html'));
 
-        const list = document.getElementById('file-list');
-        if (links.length === 0) {
-          list.innerHTML = '<li>No output files available.</li>';
-          return;
-        }
+      const list = document.getElementById('file-list');
 
-        links.forEach(link => {
-          const li = document.createElement('li');
-          const a = document.createElement('a');
-          a.href = link.href;
-          a.textContent = link.textContent;
-          li.appendChild(a);
-          list.appendChild(li);
-        });
-      })
-      .catch(err => {
-        document.getElementById('file-list').innerHTML = `<li>Error loading files: ${err.message}</li>`;
+      if (htmlFiles.length === 0) {
+        list.innerHTML = '<li>No output files available.</li>';
+        return;
+      }
+
+      htmlFiles.forEach(link => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = '/beta/outputs/' + link.href;  // Make sure href is correct
+        a.textContent = link.textContent;
+        li.appendChild(a);
+        list.appendChild(li);
       });
-  </script>
+    })
+    .catch(err => {
+      document.getElementById('file-list').innerHTML = `<li>Error loading files: ${err.message}</li>`;
+    });
+</script>
 </body>
 </html>
