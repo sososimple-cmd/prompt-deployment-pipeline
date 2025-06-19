@@ -29,6 +29,15 @@ jobs:
         run: |
           python process_prompt.py
 
+      - name: Upload output_list.json to Prod S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET_PROD }}
+        run: |
+          aws s3 cp outputs/output_list.json s3://$S3_BUCKET/
+
       - name: Upload output to Prod S3
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
