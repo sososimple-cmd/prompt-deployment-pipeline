@@ -4,12 +4,28 @@
   <meta charset="UTF-8" />
   <title>Pixel Learning Co. Prompt Outputs</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    h1 { color: #2c3e50; }
-    ul { list-style-type: none; padding-left: 0; }
-    li { margin: 10px 0; }
-    a { text-decoration: none; color: #3498db; }
-    a:hover { text-decoration: underline; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    a {
+      text-decoration: none;
+      color: #3498db;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -17,19 +33,26 @@
   <ul id="file-list"></ul>
 
   <script>
-    // Load list of files from /outputs/
-    fetch('/outputs/')
+    // Fetch directory listing from /beta/outputs/
+    fetch('/beta/outputs/')
       .then(response => {
         if (!response.ok) throw new Error("No output files found.");
         return response.text();
       })
       .then(data => {
         const parser = new DOMParser();
-        const html = parser.parseFromString(data, "text/html");
-        const links = Array.from(html.querySelectorAll("a"))
-                           .filter(link => link.href.endsWith('.html'));
+        const htmlDoc = parser.parseFromString(data, "text/html");
+
+        // Find all links ending with .html
+        const links = Array.from(htmlDoc.querySelectorAll("a"))
+                          .filter(link => link.href.endsWith('.html'));
 
         const list = document.getElementById('file-list');
+        if (links.length === 0) {
+          list.innerHTML = '<li>No output files available.</li>';
+          return;
+        }
+
         links.forEach(link => {
           const li = document.createElement('li');
           const a = document.createElement('a');
@@ -40,7 +63,7 @@
         });
       })
       .catch(err => {
-        document.getElementById('file-list').innerHTML = '<li>No output files available.</li>';
+        document.getElementById('file-list').innerHTML = `<li>Error loading files: ${err.message}</li>`;
       });
   </script>
 </body>
